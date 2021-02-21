@@ -30,7 +30,7 @@ Block::Block(): last(-1),next(-1),sum(0){}//无-1
 int SquareLinkList::next_offset(int this_offset) {//fin&fin_next需同时打开
     fin_next.open(filename,ios::in|ios::binary);//二进制打开
     if(!fin_next)cerr<<"[Error] Fail open next Block in SquareLinkList"<<endl;
-    fin_next.seekg(this_offset);
+    fin_next.seekg(this_offset + sizeof(int));
     int next;
     fin_next.read(reinterpret_cast<char *>(&next), sizeof(int));
     fin_next.close();
