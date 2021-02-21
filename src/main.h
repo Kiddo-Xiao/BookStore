@@ -4,9 +4,9 @@
 #include "Bookstore.h"
 
 void runProgramme() {
-//    int cntt = 0;
+    int cntt = 0;
     initialize();
-    //cout << "good" << endl;
+//    cout << "good" << endl;
     string command;
     while (getline(cin, command)) {
         try {
