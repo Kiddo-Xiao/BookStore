@@ -207,7 +207,7 @@ void run(const string &command) {
         argument_check(pw, "password", USERADD, 30);
         argument_check(name_, "name", USERADD, 30);
         if (authority_.empty())throw invalid_command(USERADD, MISSING, "authority");
-        authority_check(authority, USERADD);//+1???
+        authority_check(authority + 1, USERADD);//+1???
 
         vector<int> offset;
         showID.findElement(userID_, offset);
