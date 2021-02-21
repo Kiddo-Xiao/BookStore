@@ -13,7 +13,7 @@ void runProgramme() {
 //            cout << ++cntt << endl;
             run(command); }
         catch (invalid_command &tmp) {
-            cout << "[Invalid]\n";
+            cout << "Invalid\n";
 
             string log;
             if (tmp.cmdtype == SU)log += "login error.\n";
