@@ -1,0 +1,3 @@
+C:/Users/11582/Desktop/Computer Scuence/bookstore/src/cmake-build-debug/CMakeFiles/src.dir
+C:/Users/11582/Desktop/Computer Scuence/bookstore/src/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/11582/Desktop/Computer Scuence/bookstore/src/cmake-build-debug/CMakeFiles/rebuild_cache.dir

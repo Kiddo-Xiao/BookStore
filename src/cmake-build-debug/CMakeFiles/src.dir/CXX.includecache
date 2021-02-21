@@ -1,0 +1,54 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/Users/11582/Desktop/Computer Scuence/bookstore/src/Bookstore.h
+SquareLinkList.h
+C:/Users/11582/Desktop/Computer Scuence/bookstore/src/SquareLinkList.h
+Commandrelated.h
+C:/Users/11582/Desktop/Computer Scuence/bookstore/src/Commandrelated.h
+iomanip
+-
+algorithm
+-
+sstream
+-
+ctime
+-
+vector
+-
+string.h
+-
+iostream
+-
+
+C:/Users/11582/Desktop/Computer Scuence/bookstore/src/Commandrelated.h
+string
+-
+
+C:/Users/11582/Desktop/Computer Scuence/bookstore/src/SquareLinkList.h
+iostream
+-
+vector
+-
+string
+-
+cstring
+-
+fstream
+-
+algorithm
+-
+
+C:/Users/11582/Desktop/Computer Scuence/bookstore/src/main.cpp
+main.h
+C:/Users/11582/Desktop/Computer Scuence/bookstore/src/main.h
+
+C:/Users/11582/Desktop/Computer Scuence/bookstore/src/main.h
+Bookstore.h
+C:/Users/11582/Desktop/Computer Scuence/bookstore/src/Bookstore.h
+
