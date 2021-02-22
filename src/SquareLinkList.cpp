@@ -80,7 +80,7 @@ void SquareLinkList::cutBlock(int this_offset) {
     tmp_block.next=this_block.next;
     //this->next->last=tmp
     if(this_block.next>=0){
-        fout.seekp(this_block.next+sizeof(int));
+        fout.seekp(this_block.next);
         fout.write(reinterpret_cast<char*>(&tmp),sizeof(int));
     }
     //this->next=tmp
@@ -140,7 +140,7 @@ void SquareLinkList::addElement(const Element &ele){
 //    cout<<"pos:"<<pos<<endl;
     for(int i=sum-1;i>=pos;--i)tmpblock.array[i+1]=tmpblock.array[i];//依次后移
     tmpblock.array[pos]=ele;//顺利插入正确位置
-    tmpblock.sum=sum+1;
+    tmpblock.sum++;
 //    cout<<tmpblock.array[pos].key;√
 //    cout<<tmpblock.sum;√
     fout.seekp(now);
