@@ -366,7 +366,7 @@ void run(const string &command) {
         }
         if (exist[2]) {//author
             argument_check(arguments[2], "author", MODIFY, 60);
-            oldname = newselect.author;
+            oldauthor = newselect.author;
             if (!oldauthor.empty()) {
                 Element old(nowselect(), oldauthor), now(nowselect(), arguments[2]);
                 showauthor.deleteElement(old), showauthor.addElement(now);
