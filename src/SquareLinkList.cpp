@@ -140,7 +140,8 @@ void SquareLinkList::addElement(const Element &ele){
 //    cout<<"pos:"<<pos<<endl;
     for(int i=sum-1;i>=pos;--i)tmpblock.array[i+1]=tmpblock.array[i];//依次后移
     tmpblock.array[pos]=ele;//顺利插入正确位置
-    tmpblock.sum++;
+    tmpblock.sum=sum+1;
+    sum=tmpblock.sum;
 //    cout<<tmpblock.array[pos].key;√
 //    cout<<tmpblock.sum;√
     fout.seekp(now);
