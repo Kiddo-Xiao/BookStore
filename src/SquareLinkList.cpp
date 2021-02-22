@@ -197,9 +197,8 @@ void SquareLinkList::findElement(const string &key, vector<int> &result) {
             if (strcmp(tmpblock.array[i].key, key_) < 0) break;
         }
         if (pos == sum)flag = true, now = next_offset(now);
-
-        fin.close();
     }
+    fin.close();
 }
 
 void SquareLinkList::deleteElement(const Element &ele) {
