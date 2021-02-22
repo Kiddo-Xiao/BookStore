@@ -225,7 +225,7 @@ void SquareLinkList::deleteElement(const Element &ele) {
 //        cout << "sum = " << tmp.sum << endl;
 //        for(int i = 0; i < tmp.sum; i++)
 //            cout << tmp.array[i].key << endl;
-        if (strcmp(ele.key, nextelement.key) < 0)break;//next为ele后第一个
+        if (strcmp(ele.key, nextelement.key) <= 0)break;//next为ele后第一个
         now = next;
         next = next_offset(now);
     }
