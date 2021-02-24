@@ -112,6 +112,11 @@ void getstaff(vector<string> &staff) {
     fs.open(STAFF_DATA_FN, ios::in | ios::binary);
     fs.seekg(0);//从头
     fs.read(userID_, sizeof(userID_));
+//    userID = userID_;
+//    cout<<"userID:"<<userID<<endl;
+//    staff.push_back(userID);
+//    if(staff.empty())cout<<"ooooooooh1"<<endl;
+
     while (!fs.eof()) {
         userID = userID_;
         staff.push_back(userID);
@@ -143,18 +148,13 @@ void log_record(string log,const string &command) {
     fs.open(COMMAND_FN, ios::in | ios::out | ios::app);
     fs << command << endl;
     fs.close();
-
-//#define showLog
-//#ifdef showLog
-//    cout << "[debug] logContent:" << endl;
-//    cout << log;
-//#endif
 };//记录log，其中logContent需在主程序中记录相关信息
 
 void stafflog_record(const string &type,const string &arguments) {
     string stafflog;
     string userID_ = account_stack[account_stack.size() - 1].userID;
     stafflog += userID_ + " " + type + " " + arguments;
+//    cout<<arguments<<endl;
 
     fstream fs;
     fs.open(STAFF_LOG_FN, ios::in | ios::out | ios::app);
@@ -221,7 +221,7 @@ void run(const string &command) {
         log += "[log]useradd successful.\n";
         log += "new account:\n";
         log += "userID:" + userID_ + "\n" + "password:" + pw + "\n" + "name:" + name_ + "\n" + "authority:" +
-               char(useradd.authority - '0') + "\n";
+               char(useradd.authority + '0') + "\n";
         log_record(log, command);
 
         if (authority == 3)staff_record(userID_);
@@ -242,8 +242,8 @@ void run(const string &command) {
 
         log += "[log]register successful.\n";
         log += "register account:\n";
-        log += "userID" + userID_ + "\n" + "password" + pw + "\n" + "name" + name_ + "\n" + "authority:" +
-               char(register_.authority - '0') + "\n";
+        log += "userID:" + userID_ + "\n" + "password:" + pw + "\n" + "name:" + name_ + "\n" + "authority:" +
+               char(register_.authority + '0') + "\n";
         log_record(log, command);
     } else if (type == "delete") {
         string userID_;
@@ -301,7 +301,7 @@ void run(const string &command) {
         log += "[log] select successful.\n";
         log += "ISBN:" + ISBN + "\n";
         log_record(log, command);
-        if (nowauthority() == 3) stafflog_record(command, ISBN);
+        if (nowauthority() == 3) stafflog_record(type, ISBN);
     } else if (type == "modify") {
         if (nowselect() < 0)throw invalid_command(MODIFY, NOSELECT);
         Book newselect = readData<Book>(BOOK, nowselect());
@@ -428,9 +428,14 @@ void run(const string &command) {
             string log_arg;
             for (int i = 0; i < 5; ++i) {
                 if (exist[i]) {
-                    log_arg += arguments[i] + ' ';
-                } else log_arg += "+";
+                    log_arg += arguments[i] ;
+                    log_arg += ' ';
+                } else {
+                    log_arg += "same";
+                    log_arg += ' ';
+                }
             }
+//            cout<<log_arg<<endl;
             stafflog_record(type, log_arg);
         }
     } else if (type == "import") {
@@ -462,7 +467,7 @@ void run(const string &command) {
         log += "[log] import successful.\n";
         log += "ISBN:" + ISBN + "\n" + "quantity:" + quantity_ + "\n" + "cost:" + cost_ + "\n";
         log_record(log, command);
-        if (nowauthority() == 3)stafflog_record(command, ISBN + " " + quantity_ + " " + cost_);
+        if (nowauthority() == 3)stafflog_record(type, ISBN + " " + quantity_ + " " + cost_);
     } else if (type == "show") {
         string argument;
         sc >> argument;
@@ -505,7 +510,7 @@ void run(const string &command) {
                 log += "[log] show all books successful.\n";
                 log_record(log, command);
 
-                if (nowauthority() == 3)stafflog_record(command, "show all books over.");
+                if (nowauthority() == 3)stafflog_record(type, "show all books over.");
             } else {//show有参数限制
                 sc >> remain;
                 if (!remain.empty())throw invalid_command(SHOW, REMAINS);
@@ -568,7 +573,7 @@ void run(const string &command) {
                 }
 
                 log_record(log, command);
-                if (nowauthority() == 3)stafflog_record(command, log_arg);
+                if (nowauthority() == 3)stafflog_record(type, log_arg);
             }
         }
     } else if (type == "buy") {
@@ -595,18 +600,18 @@ void run(const string &command) {
         log += "[log] buy successful.\n";
         log += "ISBN:" + ISBN_ + ' ' + "quantity:" + quantity_ + "\n";
         log_record(log, command);
-        if (nowauthority() == 3)stafflog_record(command, ISBN_ + " " + quantity_);
+        if (nowauthority() == 3)stafflog_record(type, ISBN_ + " " + quantity_);
     } else if (type == "report") {
         string type_;
         sc >> type_ >> remain;
         if (!remain.empty())throw invalid_command(REPORTFINANCE, REMAINS);
 
         if (type_ == "finance") {
-            finnance_report();
             authority_check(7, REPORTFINANCE);
-        } else if (type_ == "emlpoee") {
+            finance_report();
+        } else if (type_ == "employee") {
+            authority_check(7, REPORTFINANCE);
             employee_report();
-            authority_check(7, REPORTFINANCE);
         } else if (type_ == "myself") {
             if (nowauthority() == 7)throw invalid_command(REPORTMYSELF, REPORTBOSS);
             if (nowauthority() < 3)throw invalid_command(REPORTMYSELF, WRONGAUTHORITY);
@@ -689,21 +694,21 @@ void log_report() {
     fs.close();
 }
 
-void finnance_report() {
-    cout << "---------finnance_report----------" << endl;
+void finance_report() {
+    cout << "---------finance_report----------" << endl;
     Entry entry;
     fstream fs;
     fs.open(BILL_FN, ios::in | ios::binary);
 
     for (int i = 0; i < max_transaction; ++i) {
         fs.read(reinterpret_cast<char *>(&entry), sizeof(Entry));
-        cout << "NO." << i << "entry:" << endl;
+        cout << "NO." << i+1 << "entry:" << endl;
         if (entry.quantity < 0) {//进货
             cout << "[import]time:" << entry.dealtime;
             if (entry.entry_authority == 3)cout << "[employee]";
             else cout << "[boss]";
             cout << "userID:" << entry.userID << ' ' << "import book:" << entry.ISBN << ' ';
-            cout << "quantity:" << entry.quantity << ' ' << "expense:" << setiosflags(ios::fixed) << setprecision(2)
+            cout << "quantity:" << '-' << entry.quantity << ' ' << "expense:" << setiosflags(ios::fixed) << setprecision(2)
                  << -entry.price << endl;
         } else {//卖出
             cout << "[buy]time:" << entry.dealtime;
@@ -711,11 +716,11 @@ void finnance_report() {
             else if (entry.entry_authority == 3)cout << "[employee]";
             else cout << "[boss]";
             cout << "userID:" << entry.userID << ' ' << "import book:" << entry.ISBN << ' ';
-            cout << "quantity:" << entry.quantity << ' ' << "income:" << setiosflags(ios::fixed) << setprecision(2)
+            cout << "quantity:" << '-' << entry.quantity << ' ' << "income:" << setiosflags(ios::fixed) << setprecision(2)
                  << entry.price << endl;
         }
     }
-    cout << "----------show over----------" << endl;
+    cout << "----------finance_report over----------" << endl;
     fs.close();
 }
 
@@ -723,13 +728,14 @@ void employee_report() {
     cout << "----------employee_report----------" << endl;
     vector<string> staffs;
     getstaff(staffs);
-    int num;
+    int num=0;
     for (const string &i:staffs) {
-        cout << "staff NO." << num << ":" << endl;
+        cout << "staff NO." << ++num << ":" << endl;
+//        cout<<"i="<<i<<endl;
         myself_report(i, false);
         cout << endl;
     }
-    cout << "----------report over----------" << endl;
+    cout << "----------employee_report over----------" << endl;
 }
 
 void myself_report(const string &userID,bool flag) {
@@ -740,13 +746,15 @@ void myself_report(const string &userID,bool flag) {
     //import(2 quantity, cost_price)
     //show(4 ISBN, name, author, keyword)
     //buy(2 ISBN, quantity)
-    cout << "----report-----" << endl;
-    if (flag)cout << ":report_myself_userID:" << userID << endl;
+    cout << "----oneself_report-----" << endl;
+    if (flag)cout << "report_myself_userID:" << userID << endl;
     int num = 0;
     string command_;
     fstream fs;
     fs.open(STAFF_LOG_FN, ios::in);
+    fs.seekg(0);
     while (getline(fs, command_)) {
+//        cout<<"ohh"<<endl;
         stringstream sc(command_);
         string nowuserID;
         sc >> nowuserID;
@@ -754,7 +762,7 @@ void myself_report(const string &userID,bool flag) {
         //userID==noewuserID,往下
         string commandtype_;
         sc >> commandtype_;
-        cout << "NO." << num++ << "operation:" << endl;
+        cout << "NO." << ++num << "operation:" << endl;
 
         if (commandtype_ == "useradd") {
             string userID_, pw_, authority_, name_;
@@ -793,7 +801,7 @@ void myself_report(const string &userID,bool flag) {
     }
     if (flag)cout << "[error]no operation" << endl;
     else if (num == 0)cout << "[error]this staff has no operation" << endl;
-    cout << "----------report----------";
+    cout << "----------oneself_report over----------";
     fs.close();
 }
 
@@ -935,4 +943,3 @@ void deleteAccount(const string &userID) {
     showID.findElement(userID, offset);
     if (!offset.empty()){puts("fuck");throw invalid_command(DELETE, INEXISTACCOUNT);}
 }//删除账户
-
